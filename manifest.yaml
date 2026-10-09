@@ -7,3 +7,6 @@ contract: 1
 namespace: mqtt              # allocated by Wayseer to this module for the marketplace
 network: [configured by user]
 secrets: true                # the broker password may be in the keyring
+kinds:
+  - {kind: mqtt/broker, label: Broker, plural: Brokers, like: service}
+  - {kind: mqtt/topic, label: Topic, plural: Topics, like: queue}

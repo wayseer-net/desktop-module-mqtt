@@ -1,0 +1,19 @@
+home/mqtt%2Fbroker/broker.lan:1883 "broker.lan:1883" down "not connected" dropped=0 topics=9
+home/mqtt%2Ftopic/garden "garden" ok "" topic=garden
+home/mqtt%2Ftopic/garden%2Ftemperature "temperature" ok "" bytes=4 retained=false temperature=14.2 topic=garden/temperature
+home/mqtt%2Ftopic/tele "tele" ok "" topic=tele
+home/mqtt%2Ftopic/tele%2Fplug "plug" ok "" availability=tele/plug/LWT topic=tele/plug
+home/mqtt%2Ftopic/tele%2Fplug%2FSENSOR "SENSOR" ok "" ENERGY.Power=95 ENERGY.Total=12500 ENERGY.Voltage=231 bytes=50 retained=false topic=tele/plug/SENSOR
+home/mqtt%2Ftopic/zigbee2mqtt "zigbee2mqtt" ok "" topic=zigbee2mqtt
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge "bridge" ok "" availability=zigbee2mqtt/bridge/state topic=zigbee2mqtt/bridge
+home/mqtt%2Ftopic/zigbee2mqtt%2Fhall_light "hall_light" ok "" brightness=200 bytes=31 retained=true state=ON topic=zigbee2mqtt/hall_light
+home/mqtt%2Ftopic/zigbee2mqtt%2Fkitchen "kitchen" ok "" availability=zigbee2mqtt/kitchen/availability battery=90 bytes=65 humidity=40 linkquality=120 retained=true temperature=21.5 topic=zigbee2mqtt/kitchen
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/garden
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/tele
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt
+home/mqtt%2Ftopic/garden -parent_of-> home/mqtt%2Ftopic/garden%2Ftemperature
+home/mqtt%2Ftopic/tele -parent_of-> home/mqtt%2Ftopic/tele%2Fplug
+home/mqtt%2Ftopic/tele%2Fplug -parent_of-> home/mqtt%2Ftopic/tele%2Fplug%2FSENSOR
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fhall_light
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fkitchen

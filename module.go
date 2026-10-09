@@ -25,6 +25,7 @@ type Module struct {
 	mu      sync.Mutex // guards what follows, shared by Run and the queries
 	name    sdk.ModuleID
 	opts    options
+	state   *state
 	tracker sdk.Tracker
 }
 
@@ -47,7 +48,7 @@ func (m *Module) Configure(_ context.Context, cfg sdk.Config) error {
 	}
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	m.name, m.opts = cfg.Name, o
+	m.name, m.opts, m.state = cfg.Name, o, newState(cfg.Name, &o)
 	m.health.Store(&sdk.Health{})
 	return nil
 }
@@ -82,13 +83,23 @@ func (m *Module) Run(ctx context.Context, sink sdk.Sink) error {
 func (m *Module) tick(now time.Time) *sdk.ChangeSet {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	return m.tracker.Changes(nil, nil, now)
+	evs := m.state.flush(now)
+	ents, edges := m.state.world(now)
+	cs := m.tracker.Changes(ents, edges, now)
+	cs.Events = evs
+	return cs
 }
 
-// Health reports whether the broker is being read.
+// Health reports whether the broker is being read, and the catalogue's generation.
 func (m *Module) Health() sdk.Health {
-	if h := m.health.Load(); h != nil {
-		return *h
+	var h sdk.Health
+	if p := m.health.Load(); p != nil {
+		h = *p
 	}
-	return sdk.Health{}
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if m.state != nil {
+		h.Catalogue = m.state.cat.gen
+	}
+	return h
 }
