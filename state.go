@@ -2,6 +2,7 @@ package mqtt
 
 import (
 	"bytes"
+	"container/heap"
 	"encoding/json"
 	"fmt"
 	"slices"
@@ -225,22 +226,68 @@ func (s *state) flush(now time.Time) []sdk.Event {
 // trim drops the least recently heard topics that hold no others until max_topics are left;
 // discovery configs, heard once on connecting, go last.
 func (s *state) trim() {
-	for len(s.topics) > s.opts.MaxTopics {
-		var oldest string
-		var at time.Time
-		var config bool
-		for name, t := range s.topics {
-			_, c := s.ha.configs[name]
-			if t.kids == 0 && (oldest == "" || config && !c || c == config && (t.heard.Before(at) || t.heard.Equal(at) && name < oldest)) {
-				oldest, at, config = name, t.heard, c
-			}
-		}
-		if oldest == "" {
-			return
-		}
-		s.remove(oldest)
-		s.dropped++
+	if len(s.topics) <= s.opts.MaxTopics {
+		return
 	}
+	var q leaves
+	for name, t := range s.topics {
+		if t.kids == 0 {
+			q = append(q, s.leaf(name, t))
+		}
+	}
+	heap.Init(&q)
+	for len(s.topics) > s.opts.MaxTopics && q.Len() > 0 {
+		name := heap.Pop(&q).(leaf).name
+		s.remove(name)
+		s.dropped++
+		if up, t := s.lowestLeft(name); t != nil && t.kids == 0 {
+			heap.Push(&q, s.leaf(up, t))
+		}
+	}
+}
+
+// lowestLeft is the nearest level above name that is still kept, which remove may leave empty.
+func (s *state) lowestLeft(name string) (string, *topic) {
+	for p := parentOf(name); p != ""; p = parentOf(p) {
+		if t := s.topics[p]; t != nil {
+			return p, t
+		}
+	}
+	return "", nil
+}
+
+func (s *state) leaf(name string, t *topic) leaf {
+	_, config := s.ha.configs[name]
+	return leaf{name, t.heard, config}
+}
+
+// leaf is a topic that holds no others; leaves order the first to drop first.
+type leaf struct {
+	name   string
+	heard  time.Time
+	config bool
+}
+
+type leaves []leaf
+
+func (q leaves) Len() int      { return len(q) }
+func (q leaves) Swap(i, j int) { q[i], q[j] = q[j], q[i] }
+func (q leaves) Less(i, j int) bool {
+	a, b := q[i], q[j]
+	switch {
+	case a.config != b.config:
+		return b.config
+	case !a.heard.Equal(b.heard):
+		return a.heard.Before(b.heard)
+	}
+	return a.name < b.name
+}
+func (q *leaves) Push(x any) { *q = append(*q, x.(leaf)) }
+func (q *leaves) Pop() any {
+	old := *q
+	x := old[len(old)-1]
+	*q = old[:len(old)-1]
+	return x
 }
 
 // ref is the entity ref of a native ID; the instance name was checked in Configure.

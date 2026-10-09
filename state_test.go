@@ -150,6 +150,17 @@ func TestTheLeastRecentlyHeardTopicsGoFirstPastMaxTopics(t *testing.T) {
 	}
 }
 
+func TestATopicLeftHoldingNothingGoesByWhenItWasHeard(t *testing.T) {
+	s := newTestState(t, "max_topics: 2")
+	for i, name := range []string{"p", "p/c", "q", "r"} {
+		s.receive(name, []byte("1"), false, t0.Add(time.Duration(i)*time.Second))
+	}
+	s.flush(t0.Add(time.Minute))
+	if got := slices.Sorted(maps.Keys(s.topics)); !slices.Equal(got, []string{"q", "r"}) {
+		t.Errorf("kept %q, want q and r", got)
+	}
+}
+
 func TestTheCatalogueGrowsWithNewFields(t *testing.T) {
 	s := newTestState(t, "")
 	gen := s.cat.gen
