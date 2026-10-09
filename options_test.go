@@ -81,3 +81,15 @@ func TestBadOptions(t *testing.T) {
 		}
 	}
 }
+
+func TestTheBrokerAddressHasItsSchemesDefaultPort(t *testing.T) {
+	for url, want := range map[string]string{
+		"mqtt://broker.lan": "broker.lan:1883", "mqtts://broker.lan": "broker.lan:8883",
+		"ws://broker.lan/mqtt": "broker.lan:80", "wss://broker.lan/mqtt": "broker.lan:443",
+		"mqtt://broker.lan:1884": "broker.lan:1884", "mqtt://[::1]": "[::1]:1883",
+	} {
+		if got := address(url); got != want {
+			t.Errorf("address(%q) = %q, want %q", url, got, want)
+		}
+	}
+}

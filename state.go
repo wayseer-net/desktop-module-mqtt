@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"net/url"
 	"slices"
 	"strings"
 	"time"
@@ -58,9 +57,8 @@ type state struct {
 }
 
 func newState(src sdk.ModuleID, o *options) *state {
-	u, _ := url.Parse(o.URL)
 	return &state{
-		src: src, broker: u.Host, opts: *o, topics: map[string]*topic{}, cat: newCatalogue(),
+		src: src, broker: address(o.URL), opts: *o, topics: map[string]*topic{}, cat: newCatalogue(),
 		series: map[sdk.SeriesRef]*sdk.Ring{},
 	}
 }

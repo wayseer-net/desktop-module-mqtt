@@ -3,6 +3,7 @@ package mqtt
 import (
 	"errors"
 	"fmt"
+	"net"
 	"net/url"
 	"regexp"
 	"slices"
@@ -22,7 +23,7 @@ const (
 type options struct {
 	URL               string           `yaml:"url"`         // the broker: mqtt://, mqtts://, ws:// or wss://
 	Topics            []string         `yaml:"topics"`      // topic filters to subscribe to, such as zigbee2mqtt/#
-	QoS               byte             `yaml:"qos"`         // 0, or 1 to have the broker resend what was missed
+	QoS               byte             `yaml:"qos"`         // 0, or 1 with client_id for the broker to keep what was missed
 	ClientID          string           `yaml:"client_id"`   // sent to the broker; a random one if empty
 	Username          string           `yaml:"username"`    // its password comes from secret_file, secret_env or secret_keyring
 	CAFile            string           `yaml:"ca_file"`     // PEM roots for mqtts:// and wss://; the system's if empty
@@ -128,4 +129,16 @@ func (o *options) checkAuth() error {
 		return errors.New("a password needs a username")
 	}
 	return nil
+}
+
+// defaultPorts are each scheme's port when the url names none.
+var defaultPorts = map[string]string{"mqtt": "1883", "mqtts": "8883", "ws": "80", "wss": "443"}
+
+// address is the broker's host:port from a valid url, with the scheme's port if it names none.
+func address(rawURL string) string {
+	u, _ := url.Parse(rawURL)
+	if u.Port() != "" {
+		return u.Host
+	}
+	return net.JoinHostPort(u.Hostname(), defaultPorts[u.Scheme])
 }

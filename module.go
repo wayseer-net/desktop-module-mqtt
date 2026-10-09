@@ -18,7 +18,7 @@ const version = "1"
 // init registers the kind for a build of the app that imports the package.
 func init() { sdk.Register(Kind, func() sdk.Module { return New() }) }
 
-// Module reads what an MQTT broker carries and sends what changed every interval.
+// Module reads what an MQTT broker carries, never publishing, and sends what changed every interval.
 type Module struct {
 	health atomic.Pointer[sdk.Health]
 
@@ -53,8 +53,13 @@ func (m *Module) Configure(_ context.Context, cfg sdk.Config) error {
 	return nil
 }
 
-// Run sends a snapshot, then a delta every interval, until ctx ends.
+// Run reads the broker and sends a snapshot, then a delta every interval, until ctx ends.
 func (m *Module) Run(ctx context.Context, sink sdk.Sink) error {
+	ctx, cancel := context.WithCancel(ctx)
+	var wg sync.WaitGroup
+	wg.Go(func() { m.read(ctx) })
+	defer wg.Wait()
+	defer cancel()
 	m.mu.Lock()
 	m.tracker.Reset()
 	every := m.opts.Interval
