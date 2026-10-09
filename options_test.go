@@ -96,3 +96,14 @@ func TestTheBrokerAddressHasItsSchemesDefaultPort(t *testing.T) {
 		}
 	}
 }
+
+func TestTheURLDialledHasItsSchemesDefaultPort(t *testing.T) {
+	for url, want := range map[string]string{
+		"mqtt://broker.lan": "mqtt://broker.lan:1883", "wss://broker.lan/mqtt": "wss://broker.lan:443/mqtt",
+		"mqtt://broker.lan:1884": "mqtt://broker.lan:1884", "mqtt://[::1]": "mqtt://[::1]:1883",
+	} {
+		if got := dialURL(url); got != want {
+			t.Errorf("dialURL(%q) = %q, want %q", url, got, want)
+		}
+	}
+}

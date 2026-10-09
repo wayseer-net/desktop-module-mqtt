@@ -137,6 +137,13 @@ func (o *options) checkAuth() error {
 // defaultPorts are each scheme's port when the url names none.
 var defaultPorts = map[string]string{"mqtt": "1883", "mqtts": "8883", "ws": "80", "wss": "443"}
 
+// dialURL is a valid url with its scheme's port if it names none, as paho needs.
+func dialURL(rawURL string) string {
+	u, _ := url.Parse(rawURL)
+	u.Host = address(rawURL)
+	return u.String()
+}
+
 // address is the broker's host:port from a valid url, with the scheme's port if it names none.
 func address(rawURL string) string {
 	u, _ := url.Parse(rawURL)

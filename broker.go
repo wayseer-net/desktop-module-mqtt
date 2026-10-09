@@ -115,7 +115,7 @@ func (m *Module) clientOptions() (*paho.ClientOptions, error) {
 	if id == "" {
 		id = randomClientID()
 	}
-	return paho.NewClientOptions().AddBroker(o.URL).SetClientID(id).
+	return paho.NewClientOptions().AddBroker(dialURL(o.URL)).SetClientID(id).
 		SetUsername(o.Username).SetPassword(pw.Reveal()).SetTLSConfig(tc).
 		SetCleanSession(o.QoS == 0 || o.ClientID == "").
 		SetConnectTimeout(connectTimeout).SetKeepAlive(keepAlive).
