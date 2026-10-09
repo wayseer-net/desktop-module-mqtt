@@ -4,12 +4,10 @@ import (
 	"os"
 	"testing"
 	"time"
-
-	"wayseer.dev/sdk/sdktest"
 )
 
 // TestAgainstARealBroker reads the broker at MQTT_TEST_URL for a while and logs what it saw;
-// MQTT_TEST_TOPICS narrows it from '#'.
+// MQTT_TEST_TOPICS narrows it from '#', and MQTT_TEST_OPTIONS adds options, such as ca_file.
 func TestAgainstARealBroker(t *testing.T) {
 	url := os.Getenv("MQTT_TEST_URL")
 	if url == "" {
@@ -19,8 +17,12 @@ func TestAgainstARealBroker(t *testing.T) {
 	if topics == "" {
 		topics = "'#'"
 	}
-	m := running(t, "url: "+url+"\ntopics: ["+topics+"]\n")
-	sdktest.Eventually(t, m.isConnected)
+	m := running(t, "url: "+url+"\ntopics: ["+topics+"]\n"+os.Getenv("MQTT_TEST_OPTIONS"))
+	for end := time.Now().Add(30 * time.Second); !m.isConnected(); time.Sleep(100 * time.Millisecond) {
+		if time.Now().After(end) {
+			t.Fatalf("not connected: %+v", m.Health())
+		}
+	}
 	time.Sleep(5 * time.Second)
 	m.mu.Lock()
 	defer m.mu.Unlock()

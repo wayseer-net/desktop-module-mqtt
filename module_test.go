@@ -1,7 +1,10 @@
 package mqtt
 
 import (
+	"bufio"
+	"bytes"
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -10,6 +13,36 @@ import (
 	"wayseer.dev/sdk"
 	"wayseer.dev/sdk/sdktest"
 )
+
+// retainFixtures publishes the broker's retained messages as the marketplace's sandbox does:
+// each line of testdata/broker/retained.txt a topic, a space, then the payload.
+func retainFixtures(t *testing.T, b *testBroker) {
+	t.Helper()
+	sc := bufio.NewScanner(bytes.NewReader(fixtureIn(t, "broker", "retained.txt")))
+	sc.Buffer(nil, 1<<20)
+	for sc.Scan() {
+		if line := sc.Text(); line != "" && line[0] != '#' {
+			topic, payload, ok := strings.Cut(line, " ")
+			if !ok || payload == "" {
+				t.Fatalf("retained.txt: %q has no payload", line)
+			}
+			b.publish(t, topic, payload, true)
+		}
+	}
+}
+
+func TestConformance(t *testing.T) {
+	b := startBroker(t, false, new(auth.AllowHook), nil)
+	retainFixtures(t, b)
+	sdktest.Conform(t, sdktest.Case{
+		New:      func() sdk.Module { return New() },
+		Name:     "home",
+		Options:  "url: mqtt://" + b.addr + "\ntopics: ['#']\ninterval: 1s\n",
+		Observe:  1500 * time.Millisecond, // past the first delta
+		Failing:  "url: mqtt://" + closedAddr(t) + "\ntopics: ['#']\n",
+		Manifest: "manifest.yaml",
+	})
+}
 
 // closedAddr is a loopback address nothing listens on.
 func closedAddr(t *testing.T) string { return freeAddr(t) }
