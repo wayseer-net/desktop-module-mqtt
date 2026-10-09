@@ -1,0 +1,20 @@
+# What the module is and may do; `wayseer dev sign` adds its program's sha256, os and arch.
+id: wayseer-labs/mqtt        # <publisher>/<name>
+name: MQTT
+description: Topic trees, payloads and device status from MQTT brokers, read only.
+version: 0.1.0               # raise it for each package you sign
+contract: 1
+namespace: mqtt              # allocated by Wayseer to this module for the marketplace
+# The kinds actions apply to, core or in your namespace, and the actions Wayseer may offer.
+kinds:
+  - {kind: host}
+  - {kind: service}
+  - {kind: database}
+  # - {kind: inventory/rack, label: Rack, plural: Racks, like: host}
+actions:
+  - id: recheck
+    title: Recheck
+    changes: "Nothing: it reads the item from the inventory again and says its status"
+    kinds: [host, service, database]
+network: [configured by user]
+secrets: true
