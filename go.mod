@@ -2,7 +2,7 @@ module github.com/wayseer-net/desktop-module-mqtt
 
 go 1.27
 
-require wayseer.dev/sdk v0.1.6
+require wayseer.dev/sdk v0.1.7
 
 require (
 	github.com/ebitengine/purego v0.11.0 // indirect
