@@ -2,7 +2,11 @@
 
 A module for [Wayseer Desktop](https://wayseer.app) that reads an MQTT broker: its topics as a
 tree, the numbers in their payloads as metrics with units, and whether devices say they are
-online. It subscribes to the topic filters you name and never publishes.
+online, with zigbee2mqtt's devices and mesh. It subscribes to the topic filters you name and
+publishes nothing, unless you set `zigbee2mqtt_networkmap`: then it asks each zigbee2mqtt bridge
+for its network map that often, and that request is all it ever publishes. If the broker drops the
+connection for it, as HiveMQ does when the credentials may not publish there, it stops asking
+and says so on the module's health.
 
 Work in progress: it connects and reads, but is not yet in the marketplace.
 
@@ -17,6 +21,7 @@ modules:
         topics: [zigbee2mqtt/#, tele/#]  # or '#' for everything, up to max_topics
         username: wayseer
         secret_keyring: mqtt/wayseer     # or secret_file, secret_env
+        zigbee2mqtt_networkmap: 15m      # optional; zigbee2mqtt scans every router to answer
 ```
 
 ## Licence

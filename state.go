@@ -54,6 +54,7 @@ type state struct {
 	dropped   int // topics left out by max_topics since starting
 	connected bool
 	seq       uint64
+	meshes    map[string]*mesh // zigbee2mqtt bridges, by base topic
 }
 
 func newState(src sdk.ModuleID, o *options) *state {
@@ -88,6 +89,10 @@ func (s *state) receive(name string, payload []byte, retained bool, now time.Tim
 		t.live = true
 	}
 	t.heard, t.retained, t.bytes = now, retained, len(payload)
+	if s.zigbee2mqtt(name, payload) {
+		t.read = readings{}
+		return
+	}
 	t.read = readingsOf(name[strings.LastIndexByte(name, '/')+1:], payload)
 	for _, r := range t.read.nums {
 		if s.cat.note(r.field) {

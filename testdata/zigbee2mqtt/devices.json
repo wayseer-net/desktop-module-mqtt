@@ -1,0 +1,9 @@
+[
+  {"ieee_address":"0x00124b0000000001","type":"Coordinator","network_address":0,"friendly_name":"Coordinator","supported":true,"disabled":false,"interview_completed":true,"definition":null},
+  {"ieee_address":"0x00124b0000000002","type":"Router","network_address":11111,"friendly_name":"hall_light","power_source":"Mains (single phase)","supported":true,"disabled":false,"interview_completed":true,
+   "definition":{"model":"LED1545G12","vendor":"IKEA","description":"TRADFRI bulb E26/E27","exposes":[{"type":"light","features":[{"name":"state"}]}]}},
+  {"ieee_address":"0x00124b0000000003","type":"EndDevice","network_address":22222,"friendly_name":"kitchen","power_source":"Battery","supported":true,"disabled":false,"interview_completed":true,
+   "definition":{"model":"WSDCGQ11LM","vendor":"Aqara","description":"Temperature, humidity and pressure sensor","exposes":[]}},
+  {"ieee_address":"0x00124b0000000004","type":"EndDevice","network_address":33333,"friendly_name":"porch/door","power_source":"Battery","supported":true,"disabled":false,"interview_completed":true,
+   "definition":{"model":"MCCGQ11LM","vendor":"Aqara","description":"Door and window contact sensor","exposes":[]}}
+]

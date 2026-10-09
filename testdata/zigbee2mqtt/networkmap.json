@@ -1,0 +1,14 @@
+{"data":{"routes":false,"type":"raw","value":{
+  "nodes":[
+    {"ieeeAddr":"0x00124b0000000001","friendlyName":"Coordinator","type":"Coordinator","networkAddress":0},
+    {"ieeeAddr":"0x00124b0000000002","friendlyName":"hall_light","type":"Router","networkAddress":11111},
+    {"ieeeAddr":"0x00124b0000000003","friendlyName":"kitchen","type":"EndDevice","networkAddress":22222},
+    {"ieeeAddr":"0x00124b0000000004","friendlyName":"porch/door","type":"EndDevice","networkAddress":33333}
+  ],
+  "links":[
+    {"source":{"ieeeAddr":"0x00124b0000000002","networkAddress":11111},"target":{"ieeeAddr":"0x00124b0000000001","networkAddress":0},"linkquality":180,"lqi":180,"depth":1,"relationship":1,"routes":[]},
+    {"source":{"ieeeAddr":"0x00124b0000000001","networkAddress":0},"target":{"ieeeAddr":"0x00124b0000000002","networkAddress":11111},"linkquality":160,"lqi":160,"depth":0,"relationship":0,"routes":[]},
+    {"source":{"ieeeAddr":"0x00124b0000000003","networkAddress":22222},"target":{"ieeeAddr":"0x00124b0000000002","networkAddress":11111},"linkquality":120,"lqi":120,"depth":2,"relationship":1,"routes":[]},
+    {"source":{"ieeeAddr":"0x00124b0000000004","networkAddress":33333},"target":{"ieeeAddr":"0x00124b0000000001","networkAddress":0},"linkquality":75,"lqi":75,"depth":1,"relationship":1,"routes":[]},
+    {"source":{"ieeeAddr":"0x00124b00000000ff","networkAddress":44444},"target":{"ieeeAddr":"0x00124b0000000001","networkAddress":0},"linkquality":10,"lqi":10,"depth":1,"relationship":1,"routes":[]}
+  ]}},"status":"ok"}

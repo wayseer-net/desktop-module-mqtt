@@ -44,6 +44,7 @@ func TestGoodOptions(t *testing.T) {
 		"url: wss://broker.lan/mqtt\ntopics: [x]\nca_file: ca.pem\ncert_file: c.pem\nkey_file: k.pem",
 		"url: ws://broker.lan:9001\ntopics: [x]\nclient_id: wayseer-desk_1.a",
 		"url: mqtt://broker.lan\ntopics: [x]\nusername: me\nsecret_env: MQTT_PASSWORD",
+		"url: mqtt://broker.lan\ntopics: [zigbee2mqtt/#]\nzigbee2mqtt_networkmap: 15m",
 	} {
 		if _, err := parsed(t, yaml); err != nil {
 			t.Errorf("%q: %v", yaml, err)
@@ -75,6 +76,8 @@ func TestBadOptions(t *testing.T) {
 		{ok + "topics: [x]\ninterval: 100ms", "interval"},
 		{ok + "topics: [x]\nstale_after: 1s", "stale_after"},
 		{ok + "topics: [x]\nmax_topics: 0", "max_topics"},
+		{ok + "topics: [x]\nzigbee2mqtt_networkmap: 30s", "zigbee2mqtt_networkmap"},
+		{ok + "topics: [x]\nzigbee2mqtt_networkmap: 25h", "zigbee2mqtt_networkmap"},
 	} {
 		if _, err := parsed(t, c.yaml); err == nil || !strings.Contains(err.Error(), c.want) {
 			t.Errorf("%q: error %v, want one mentioning %q", c.yaml, err, c.want)

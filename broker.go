@@ -25,6 +25,7 @@ const (
 	firstRetry     = time.Second
 	lastRetry      = time.Minute
 	subackRefused  = 0x80
+	mapCheck       = time.Second // how often bridges due a network map request are looked for
 )
 
 // read connects to the broker, trying again with backoff until it first answers; the client
@@ -43,8 +44,38 @@ func (m *Module) read(ctx context.Context) {
 		case <-time.After(wait):
 		}
 	}
-	<-ctx.Done()
+	m.askForMaps(ctx, c)
 	c.Disconnect(250)
+}
+
+// askForMaps publishes a network map request to each zigbee2mqtt bridge as it falls due, if
+// zigbee2mqtt_networkmap is set; it is all the module ever publishes. It returns when ctx ends.
+func (m *Module) askForMaps(ctx context.Context, c paho.Client) {
+	m.mu.Lock()
+	every := m.opts.NetworkMap
+	m.mu.Unlock()
+	if every == 0 {
+		<-ctx.Done()
+		return
+	}
+	t := time.NewTicker(mapCheck)
+	defer t.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case now := <-t.C:
+			if !c.IsConnectionOpen() {
+				continue
+			}
+			m.mu.Lock()
+			due := m.state.mapsDue(now, every)
+			m.mu.Unlock()
+			for _, topic := range due {
+				c.Publish(topic, 0, false, z2mMapRequest)
+			}
+		}
+	}
 }
 
 // dial makes one attempt to connect.
@@ -164,6 +195,9 @@ func subscribed(codes map[string]byte) sdk.Health {
 }
 
 func (m *Module) lost(_ paho.Client, err error) {
+	m.mu.Lock()
+	m.state.mapRefused(time.Now())
+	m.mu.Unlock()
 	m.setHealth(false, sdk.Health{Disconnected: true, Err: fmt.Errorf("lost the broker: %w", err)})
 }
 
@@ -173,10 +207,14 @@ func (m *Module) message(_ paho.Client, msg paho.Message) {
 	m.state.receive(msg.Topic(), msg.Payload(), msg.Retained(), time.Now())
 }
 
-// setHealth notes whether the broker is connected, and the health to report.
+// setHealth notes whether the broker is connected, and the health to report with any note on
+// refused network map requests.
 func (m *Module) setHealth(connected bool, h sdk.Health) {
 	m.mu.Lock()
 	m.state.connected = connected
+	if n := m.state.mapNote(); n != "" {
+		h.Note = strings.TrimPrefix(h.Note+"; "+n, "; ")
+	}
 	m.mu.Unlock()
 	m.health.Store(&h)
 }

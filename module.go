@@ -18,7 +18,8 @@ const version = "1"
 // init registers the kind for a build of the app that imports the package.
 func init() { sdk.Register(Kind, func() sdk.Module { return New() }) }
 
-// Module reads what an MQTT broker carries, never publishing, and sends what changed every interval.
+// Module reads what an MQTT broker carries and sends what changed every interval. It publishes
+// only zigbee2mqtt network map requests, and only when zigbee2mqtt_networkmap is set.
 type Module struct {
 	health atomic.Pointer[sdk.Health]
 
@@ -34,7 +35,7 @@ func New() *Module { return &Module{} }
 
 // Info describes the module.
 func (m *Module) Info() sdk.Info {
-	return sdk.Info{Kind: Kind, Version: version, Description: "Topic trees, payloads and device status from MQTT brokers, read only"}
+	return sdk.Info{Kind: Kind, Version: version, Description: "Topic trees, payloads, device status and Zigbee meshes from MQTT brokers"}
 }
 
 // Configure checks the options; nothing is read until Run.

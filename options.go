@@ -21,17 +21,18 @@ const (
 )
 
 type options struct {
-	URL               string           `yaml:"url"`         // the broker: mqtt://, mqtts://, ws:// or wss://
-	Topics            []string         `yaml:"topics"`      // topic filters to subscribe to, such as zigbee2mqtt/#
-	QoS               byte             `yaml:"qos"`         // 0, or 1 with client_id for the broker to keep what was missed
-	ClientID          string           `yaml:"client_id"`   // sent to the broker; a random one if empty
-	Username          string           `yaml:"username"`    // its password comes from secret_file, secret_env or secret_keyring
-	CAFile            string           `yaml:"ca_file"`     // PEM roots for mqtts:// and wss://; the system's if empty
-	CertFile          string           `yaml:"cert_file"`   // a PEM client certificate, with key_file
-	KeyFile           string           `yaml:"key_file"`    // its PEM key
-	Interval          time.Duration    `yaml:"interval"`    // how often changes and series points are sent
-	StaleAfter        time.Duration    `yaml:"stale_after"` // how long a topic may be silent before it shows as stale
-	MaxTopics         int              `yaml:"max_topics"`  // most topics kept; the least recently heard go first
+	URL               string           `yaml:"url"`                    // the broker: mqtt://, mqtts://, ws:// or wss://
+	Topics            []string         `yaml:"topics"`                 // topic filters to subscribe to, such as zigbee2mqtt/#
+	QoS               byte             `yaml:"qos"`                    // 0, or 1 with client_id for the broker to keep what was missed
+	ClientID          string           `yaml:"client_id"`              // sent to the broker; a random one if empty
+	Username          string           `yaml:"username"`               // its password comes from secret_file, secret_env or secret_keyring
+	CAFile            string           `yaml:"ca_file"`                // PEM roots for mqtts:// and wss://; the system's if empty
+	CertFile          string           `yaml:"cert_file"`              // a PEM client certificate, with key_file
+	KeyFile           string           `yaml:"key_file"`               // its PEM key
+	Interval          time.Duration    `yaml:"interval"`               // how often changes and series points are sent
+	StaleAfter        time.Duration    `yaml:"stale_after"`            // how long a topic may be silent before it shows as stale
+	MaxTopics         int              `yaml:"max_topics"`             // most topics kept; the least recently heard go first
+	NetworkMap        time.Duration    `yaml:"zigbee2mqtt_networkmap"` // how often to ask each zigbee2mqtt bridge for its mesh; never if 0
 	sdk.SecretOptions `yaml:",inline"` // the broker password, if it wants one
 }
 
@@ -116,6 +117,8 @@ func (o *options) checkScalars() error {
 		return fmt.Errorf("stale_after %v must be from the interval to 168h", o.StaleAfter)
 	case o.MaxTopics < 1 || o.MaxTopics > 100_000:
 		return fmt.Errorf("max_topics %d must be from 1 to 100000", o.MaxTopics)
+	case o.NetworkMap != 0 && (o.NetworkMap < time.Minute || o.NetworkMap > 24*time.Hour):
+		return fmt.Errorf("zigbee2mqtt_networkmap %v must be 0 or from 1m to 24h", o.NetworkMap)
 	}
 	return nil
 }

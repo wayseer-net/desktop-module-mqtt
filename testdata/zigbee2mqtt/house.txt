@@ -1,0 +1,34 @@
+home/mqtt%2Fbroker/broker.lan:1883 "broker.lan:1883" down "not connected" dropped=0 topics=15
+home/mqtt%2Ftopic/garden "garden" ok "" topic=garden
+home/mqtt%2Ftopic/garden%2Ftemperature "temperature" ok "" bytes=4 retained=false temperature=14.2 topic=garden/temperature
+home/mqtt%2Ftopic/tele "tele" ok "" topic=tele
+home/mqtt%2Ftopic/tele%2Fplug "plug" ok "" availability=tele/plug/LWT topic=tele/plug
+home/mqtt%2Ftopic/tele%2Fplug%2FSENSOR "SENSOR" ok "" ENERGY.Power=95 ENERGY.Total=12500 ENERGY.Voltage=231 bytes=50 retained=false topic=tele/plug/SENSOR
+home/mqtt%2Ftopic/zigbee2mqtt "zigbee2mqtt" ok "" topic=zigbee2mqtt
+home/mqtt%2Ftopic/zigbee2mqtt%2FCoordinator "Coordinator" ok "" ieee_address=0x00124b0000000001 role=Coordinator topic=zigbee2mqtt/Coordinator
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge "bridge" ok "" availability=zigbee2mqtt/bridge/state topic=zigbee2mqtt/bridge
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge%2Fdevices "devices" ok "" bytes=1194 retained=true topic=zigbee2mqtt/bridge/devices
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge%2Fresponse "response" ok "" topic=zigbee2mqtt/bridge/response
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge%2Fresponse%2Fnetworkmap "networkmap" ok "" bytes=1534 retained=false topic=zigbee2mqtt/bridge/response/networkmap
+home/mqtt%2Ftopic/zigbee2mqtt%2Fhall_light "hall_light" ok "" brightness=200 bytes=31 ieee_address=0x00124b0000000002 model=LED1545G12 power_source=Mains (single phase) retained=true role=Router state=ON topic=zigbee2mqtt/hall_light vendor=IKEA
+home/mqtt%2Ftopic/zigbee2mqtt%2Fkitchen "kitchen" ok "" availability=zigbee2mqtt/kitchen/availability battery=90 bytes=65 humidity=40 ieee_address=0x00124b0000000003 linkquality=120 model=WSDCGQ11LM power_source=Battery retained=true role=EndDevice temperature=21.5 topic=zigbee2mqtt/kitchen vendor=Aqara
+home/mqtt%2Ftopic/zigbee2mqtt%2Fporch "porch" ok "" topic=zigbee2mqtt/porch
+home/mqtt%2Ftopic/zigbee2mqtt%2Fporch%2Fdoor "door" ok "" ieee_address=0x00124b0000000004 model=MCCGQ11LM power_source=Battery role=EndDevice topic=zigbee2mqtt/porch/door vendor=Aqara
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/garden
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/tele
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt
+home/mqtt%2Ftopic/garden -parent_of-> home/mqtt%2Ftopic/garden%2Ftemperature
+home/mqtt%2Ftopic/tele -parent_of-> home/mqtt%2Ftopic/tele%2Fplug
+home/mqtt%2Ftopic/tele%2Fplug -parent_of-> home/mqtt%2Ftopic/tele%2Fplug%2FSENSOR
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2FCoordinator
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fhall_light
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fkitchen
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fporch
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge%2Fdevices
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge%2Fresponse
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge%2Fresponse -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge%2Fresponse%2Fnetworkmap
+home/mqtt%2Ftopic/zigbee2mqtt%2Fhall_light -talks_to-> home/mqtt%2Ftopic/zigbee2mqtt%2FCoordinator
+home/mqtt%2Ftopic/zigbee2mqtt%2Fkitchen -talks_to-> home/mqtt%2Ftopic/zigbee2mqtt%2Fhall_light
+home/mqtt%2Ftopic/zigbee2mqtt%2Fporch -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fporch%2Fdoor
+home/mqtt%2Ftopic/zigbee2mqtt%2Fporch%2Fdoor -talks_to-> home/mqtt%2Ftopic/zigbee2mqtt%2FCoordinator

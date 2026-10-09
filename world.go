@@ -20,7 +20,7 @@ func (s *state) world(now time.Time) (map[sdk.EntityRef]sdk.Entity, map[sdk.Edge
 	}
 	for name, t := range s.topics {
 		ref := s.ref(kindTopic, name)
-		ents[ref] = sdk.Entity{Ref: ref, Kind: kindTopic, Name: levelName(name), Status: t.status(s.opts.StaleAfter, now), Attrs: t.attrs(name), Source: s.src}
+		ents[ref] = sdk.Entity{Ref: ref, Kind: kindTopic, Name: levelName(name), Status: t.status(s.opts.StaleAfter, now), Attrs: s.attrs(name, t), Source: s.src}
 		parent := broker
 		if p := parentOf(name); p != "" {
 			parent = s.ref(kindTopic, p)
@@ -28,6 +28,7 @@ func (s *state) world(now time.Time) (map[sdk.EntityRef]sdk.Entity, map[sdk.Edge
 		k := sdk.EdgeKey{From: parent, To: ref, Rel: sdk.RelParentOf}
 		edges[k] = sdk.Edge{From: parent, To: ref, Rel: sdk.RelParentOf, Weight: 1, Source: s.src}
 	}
+	s.meshEdges(edges)
 	return ents, edges
 }
 
@@ -66,8 +67,9 @@ func span(d time.Duration) string {
 	return fmt.Sprintf("%dm", int(d.Minutes()))
 }
 
-// attrs are a topic's readings, numbers in their units, then what the broker said of it.
-func (t *topic) attrs(name string) map[string]sdk.Value {
+// attrs are a topic's readings, numbers in their units, then what the broker and any bridge
+// said of it.
+func (s *state) attrs(name string, t *topic) map[string]sdk.Value {
 	a := make(map[string]sdk.Value, len(t.read.attrs)+len(t.read.nums)+3)
 	for k, v := range t.read.attrs {
 		a[k] = v
@@ -83,5 +85,6 @@ func (t *topic) attrs(name string) map[string]sdk.Value {
 	if t.availOn != "" {
 		a["availability"] = sdk.String(t.availOn)
 	}
+	s.deviceAttrs(name, a)
 	return a
 }
