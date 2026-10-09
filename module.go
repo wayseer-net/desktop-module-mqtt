@@ -23,12 +23,20 @@ func init() { sdk.Register(Kind, func() sdk.Module { return New() }) }
 type Module struct {
 	health atomic.Pointer[sdk.Health]
 
-	mu      sync.Mutex // guards what follows, shared by Run and the queries
-	name    sdk.ModuleID
-	opts    options
-	state   *state
-	tracker sdk.Tracker
+	mu       sync.Mutex // guards what follows, shared by Run and the queries
+	name     sdk.ModuleID
+	opts     options
+	state    *state
+	tracker  sdk.Tracker
+	answered func() // called once the broker answers a subscription
 }
+
+// The first snapshot waits for the retained messages: settle past the broker's answer to the
+// subscription, and never longer than firstWait or an interval.
+const (
+	settle    = 250 * time.Millisecond
+	firstWait = 3 * time.Second
+)
 
 // New makes an unconfigured module.
 func New() *Module { return &Module{} }
@@ -57,21 +65,27 @@ func (m *Module) Configure(_ context.Context, cfg sdk.Config) error {
 // Run reads the broker and sends a snapshot, then a delta every interval, until ctx ends.
 func (m *Module) Run(ctx context.Context, sink sdk.Sink) error {
 	ctx, cancel := context.WithCancel(ctx)
+	answered := make(chan struct{})
+	m.mu.Lock()
+	m.tracker.Reset()
+	m.answered = sync.OnceFunc(func() { close(answered) })
+	every := m.opts.Interval
+	m.mu.Unlock()
 	var wg sync.WaitGroup
 	wg.Go(func() { m.read(ctx) })
 	defer wg.Wait()
 	defer cancel()
-	m.mu.Lock()
-	m.tracker.Reset()
-	every := m.opts.Interval
-	m.mu.Unlock()
-	send := sink.Snapshot
-	t := time.NewTimer(0)
+	send, first := sink.Snapshot, answered
+	t := time.NewTimer(min(every, firstWait))
 	defer t.Stop()
 	for {
 		select {
 		case <-ctx.Done():
 			return nil
+		case <-first:
+			first = nil
+			t.Reset(settle)
+			continue
 		case <-t.C:
 		}
 		if err := send(ctx, m.tick(time.Now())); err != nil {
@@ -80,7 +94,7 @@ func (m *Module) Run(ctx context.Context, sink sdk.Sink) error {
 			}
 			return err
 		}
-		send = sink.Delta
+		send, first = sink.Delta, nil
 		t.Reset(every)
 	}
 }

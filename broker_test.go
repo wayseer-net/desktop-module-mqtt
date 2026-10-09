@@ -83,8 +83,8 @@ func (b *testBroker) publish(t *testing.T, topic, payload string, retain bool) {
 	}
 }
 
-// running configures a module with yaml and runs it until the test ends.
-func running(t *testing.T, yaml string) *Module {
+// configured is a module configured with yaml.
+func configured(t *testing.T, yaml string) *Module {
 	t.Helper()
 	cfg, err := sdktest.Config("home", yaml)
 	if err != nil {
@@ -94,6 +94,13 @@ func running(t *testing.T, yaml string) *Module {
 	if err := m.Configure(t.Context(), cfg); err != nil {
 		t.Fatal(err)
 	}
+	return m
+}
+
+// running configures a module with yaml and runs it until the test ends.
+func running(t *testing.T, yaml string) *Module {
+	t.Helper()
+	m := configured(t, yaml)
 	sdktest.Run(t, func(ctx context.Context, s *sdktest.Sink) error { return m.Run(ctx, s) })
 	return m
 }

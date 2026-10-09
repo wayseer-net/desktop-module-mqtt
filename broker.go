@@ -163,7 +163,9 @@ func (m *Module) subscribe(c paho.Client) {
 	for _, f := range m.opts.Topics {
 		filters[f] = m.opts.QoS
 	}
+	answered := m.answered
 	m.mu.Unlock()
+	defer answered()
 	tok := c.SubscribeMultiple(filters, nil)
 	if !tok.WaitTimeout(connectTimeout) {
 		m.setHealth(true, sdk.Health{Err: errors.New("the broker did not answer the subscription")})
