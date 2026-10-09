@@ -1,5 +1,0 @@
-inv/database/db-01 "db-01" warn engine=postgres primary=true
-inv/host/web-01 "web-01" ok cores=8 role=web
-inv/service/billing "billing" ok
-inv/host/web-01 depends_on inv/database/db-01
-inv/service/billing depends_on inv/database/db-01

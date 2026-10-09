@@ -6,31 +6,18 @@ import (
 	"strings"
 	"testing"
 
-	mqtt "github.com/wayseer-net/desktop-module-mqtt"
 	"wayseer.dev/sdk/manifest"
 )
 
-// TestManifestDeclaresEveryAction keeps manifest.yaml in step with Actions: Wayseer offers a
-// packaged module's action only as its manifest declares it, and the marketplace refuses one
-// that offers more.
-func TestManifestDeclaresEveryAction(t *testing.T) {
+// TestManifestNamesTheModule keeps manifest.yaml as the marketplace wants it: this id, version
+// and namespace, no actions, a broker the owner names, and a password that may be in the keyring.
+func TestManifestNamesTheModule(t *testing.T) {
 	m := readManifest(t)
-	for _, a := range mqtt.New().Actions() {
-		i := slices.IndexFunc(m.Actions, func(d manifest.Action) bool { return d.ID == a.ID })
-		if i < 0 {
-			t.Errorf("manifest.yaml doesn't declare %s", a.ID)
-			continue
-		}
-		var kinds []string
-		for _, k := range a.Kinds {
-			kinds = append(kinds, string(k))
-		}
-		if d := m.Actions[i]; !slices.Equal(d.Kinds, kinds) || d.Title != a.Title || d.Changes != a.Changes {
-			t.Errorf("manifest.yaml declares %s as %+v; Actions offers %+v", a.ID, d, a)
-		}
+	if m.ID != "wayseer-labs/mqtt" || m.Namespace != "mqtt" || m.Version != "0.1.0" {
+		t.Errorf("manifest.yaml names %s %s in %s", m.ID, m.Version, m.Namespace)
 	}
-	if len(m.Actions) != len(mqtt.New().Actions()) {
-		t.Errorf("manifest.yaml declares %d actions; Actions offers %d", len(m.Actions), len(mqtt.New().Actions()))
+	if len(m.Actions) != 0 || !m.Secrets || !slices.Equal(m.Network, []string{"configured by user"}) {
+		t.Errorf("manifest.yaml declares actions %v, secrets %v, network %v", m.Actions, m.Secrets, m.Network)
 	}
 }
 

@@ -1,7 +1,0 @@
-{
-  "items": [
-    {"id": "web-01", "name": "web-01", "kind": "host", "status": "ok", "attrs": {"role": "web", "cores": 8}, "metrics": {"cpu.utilisation": 42, "memory.utilisation": 61}, "depends_on": ["db-01"]},
-    {"id": "db-01", "name": "db-01", "kind": "database", "status": "warn", "attrs": {"engine": "postgres", "primary": true}, "metrics": {"cpu.utilisation": 17}},
-    {"id": "billing", "kind": "service", "status": "ok", "depends_on": ["db-01", "missing"]}
-  ]
-}
