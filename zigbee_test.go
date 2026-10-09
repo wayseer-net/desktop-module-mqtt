@@ -17,7 +17,12 @@ import (
 
 func fixture(t *testing.T, name string) []byte {
 	t.Helper()
-	b, err := os.ReadFile("testdata/zigbee2mqtt/" + name)
+	return fixtureIn(t, "zigbee2mqtt", name)
+}
+
+func fixtureIn(t *testing.T, dir, name string) []byte {
+	t.Helper()
+	b, err := os.ReadFile("testdata/" + dir + "/" + name)
 	if err != nil {
 		t.Fatal(err)
 	}

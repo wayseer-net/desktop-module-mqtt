@@ -1,0 +1,81 @@
+home/mqtt%2Fbroker/broker.lan:1883 "broker.lan:1883" down "not connected" dropped=0 topics=35
+home/mqtt%2Fdevice/a4cf12b3c4d5 "garden" ok "" area=Garden manufacturer=espressif model=esp32dev sw_version=esphome v2026.9.0 Oct  1 2026
+home/mqtt%2Fdevice/boiler-1 "Boiler" ok "" manufacturer=Vaillant model=ecoTEC plus
+home/mqtt%2Fdevice/zigbee2mqtt_0x00124b0000000003 "kitchen" ok "" manufacturer=Aqara model=Temperature, humidity and pressure sensor (WSDCGQ11LM)
+home/mqtt%2Fdevice/zigbee2mqtt_bridge_0x00124b0000000001 "Zigbee2MQTT Bridge" ok "" hw_version=zStack3x0 20240710 manufacturer=Zigbee2MQTT model=Bridge sw_version=2.6.1
+home/mqtt%2Ftopic/garden "garden" ok "" availability=garden/status topic=garden
+home/mqtt%2Ftopic/garden%2Fsensor "sensor" ok "" topic=garden/sensor
+home/mqtt%2Ftopic/garden%2Fsensor%2Fgarden_temperature "garden_temperature" ok "" topic=garden/sensor/garden_temperature
+home/mqtt%2Ftopic/garden%2Fsensor%2Fgarden_temperature%2Fstate "state" ok "" bytes=4 retained=true temperature=20 topic=garden/sensor/garden_temperature/state
+home/mqtt%2Ftopic/garden%2Ftemperature "temperature" ok "" bytes=4 retained=false temperature=14.2 topic=garden/temperature
+home/mqtt%2Ftopic/heating "heating" ok "" topic=heating
+home/mqtt%2Ftopic/heating%2Fboiler "boiler" ok "" topic=heating/boiler
+home/mqtt%2Ftopic/heating%2Fboiler%2Fflow "flow" ok "" bytes=14 retained=true temperature=55.5 topic=heating/boiler/flow
+home/mqtt%2Ftopic/heating%2Fboiler%2Fonline "online" ok "" bytes=1 retained=true topic=heating/boiler/online
+home/mqtt%2Ftopic/heating%2Fboiler%2Fpower "power" ok "" bytes=3 power=1200 retained=true topic=heating/boiler/power
+home/mqtt%2Ftopic/heating%2Fboiler%2Fpressure "pressure" ok "" bytes=3 pressure=150000 retained=true topic=heating/boiler/pressure
+home/mqtt%2Ftopic/homeassistant "homeassistant" ok "" topic=homeassistant
+home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor "binary_sensor" ok "" topic=homeassistant/binary_sensor
+home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor%2F1221051039810110150109113116116_0x00124b0000000001 "1221051039810110150109113116116_0x00124b0000000001" ok "" topic=homeassistant/binary_sensor/1221051039810110150109113116116_0x00124b0000000001
+home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor%2F1221051039810110150109113116116_0x00124b0000000001%2Fconnection_state "connection_state" ok "" topic=homeassistant/binary_sensor/1221051039810110150109113116116_0x00124b0000000001/connection_state
+home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor%2F1221051039810110150109113116116_0x00124b0000000001%2Fconnection_state%2Fconfig "config" ok "" bytes=423 retained=true topic=homeassistant/binary_sensor/1221051039810110150109113116116_0x00124b0000000001/connection_state/config
+home/mqtt%2Ftopic/homeassistant%2Fdevice "device" ok "" topic=homeassistant/device
+home/mqtt%2Ftopic/homeassistant%2Fdevice%2Fboiler "boiler" ok "" topic=homeassistant/device/boiler
+home/mqtt%2Ftopic/homeassistant%2Fdevice%2Fboiler%2Fconfig "config" ok "" bytes=480 retained=true topic=homeassistant/device/boiler/config
+home/mqtt%2Ftopic/homeassistant%2Fsensor "sensor" ok "" topic=homeassistant/sensor
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003 "0x00124b0000000003" ok "" topic=homeassistant/sensor/0x00124b0000000003
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Fhumidity "humidity" ok "" topic=homeassistant/sensor/0x00124b0000000003/humidity
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Fhumidity%2Fconfig "config" ok "" bytes=418 retained=true topic=homeassistant/sensor/0x00124b0000000003/humidity/config
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Ftemperature "temperature" ok "" topic=homeassistant/sensor/0x00124b0000000003/temperature
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Ftemperature%2Fconfig "config" ok "" bytes=585 retained=true topic=homeassistant/sensor/0x00124b0000000003/temperature/config
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2Fgarden "garden" ok "" topic=homeassistant/sensor/garden
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2Fgarden%2Fgarden_temperature "garden_temperature" ok "" topic=homeassistant/sensor/garden/garden_temperature
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2Fgarden%2Fgarden_temperature%2Fconfig "config" ok "" bytes=353 retained=true topic=homeassistant/sensor/garden/garden_temperature/config
+home/mqtt%2Ftopic/tele "tele" ok "" topic=tele
+home/mqtt%2Ftopic/tele%2Fplug "plug" ok "" availability=tele/plug/LWT topic=tele/plug
+home/mqtt%2Ftopic/tele%2Fplug%2FSENSOR "SENSOR" ok "" ENERGY.Power=95 ENERGY.Total=12500 ENERGY.Voltage=231 bytes=50 retained=false topic=tele/plug/SENSOR
+home/mqtt%2Ftopic/zigbee2mqtt "zigbee2mqtt" ok "" topic=zigbee2mqtt
+home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge "bridge" ok "" availability=zigbee2mqtt/bridge/state topic=zigbee2mqtt/bridge
+home/mqtt%2Ftopic/zigbee2mqtt%2Fhall_light "hall_light" ok "" brightness=200 bytes=31 retained=true state=ON topic=zigbee2mqtt/hall_light
+home/mqtt%2Ftopic/zigbee2mqtt%2Fkitchen "kitchen" ok "" availability=zigbee2mqtt/kitchen/availability battery=90 bytes=65 humidity=40 linkquality=120 retained=true temperature=21.5 topic=zigbee2mqtt/kitchen
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/garden
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/heating
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/homeassistant
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/tele
+home/mqtt%2Fbroker/broker.lan:1883 -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt
+home/mqtt%2Fdevice/a4cf12b3c4d5 -owns-> home/mqtt%2Ftopic/garden%2Fsensor%2Fgarden_temperature%2Fstate
+home/mqtt%2Fdevice/boiler-1 -owns-> home/mqtt%2Ftopic/heating%2Fboiler%2Fflow
+home/mqtt%2Fdevice/boiler-1 -owns-> home/mqtt%2Ftopic/heating%2Fboiler%2Fpower
+home/mqtt%2Fdevice/boiler-1 -owns-> home/mqtt%2Ftopic/heating%2Fboiler%2Fpressure
+home/mqtt%2Fdevice/zigbee2mqtt_0x00124b0000000003 -owns-> home/mqtt%2Ftopic/zigbee2mqtt%2Fkitchen
+home/mqtt%2Fdevice/zigbee2mqtt_0x00124b0000000003 -talks_to-> home/mqtt%2Fdevice/zigbee2mqtt_bridge_0x00124b0000000001
+home/mqtt%2Ftopic/garden -parent_of-> home/mqtt%2Ftopic/garden%2Fsensor
+home/mqtt%2Ftopic/garden -parent_of-> home/mqtt%2Ftopic/garden%2Ftemperature
+home/mqtt%2Ftopic/garden%2Fsensor -parent_of-> home/mqtt%2Ftopic/garden%2Fsensor%2Fgarden_temperature
+home/mqtt%2Ftopic/garden%2Fsensor%2Fgarden_temperature -parent_of-> home/mqtt%2Ftopic/garden%2Fsensor%2Fgarden_temperature%2Fstate
+home/mqtt%2Ftopic/heating -parent_of-> home/mqtt%2Ftopic/heating%2Fboiler
+home/mqtt%2Ftopic/heating%2Fboiler -parent_of-> home/mqtt%2Ftopic/heating%2Fboiler%2Fflow
+home/mqtt%2Ftopic/heating%2Fboiler -parent_of-> home/mqtt%2Ftopic/heating%2Fboiler%2Fonline
+home/mqtt%2Ftopic/heating%2Fboiler -parent_of-> home/mqtt%2Ftopic/heating%2Fboiler%2Fpower
+home/mqtt%2Ftopic/heating%2Fboiler -parent_of-> home/mqtt%2Ftopic/heating%2Fboiler%2Fpressure
+home/mqtt%2Ftopic/homeassistant -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor
+home/mqtt%2Ftopic/homeassistant -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fdevice
+home/mqtt%2Ftopic/homeassistant -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor
+home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor%2F1221051039810110150109113116116_0x00124b0000000001
+home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor%2F1221051039810110150109113116116_0x00124b0000000001 -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor%2F1221051039810110150109113116116_0x00124b0000000001%2Fconnection_state
+home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor%2F1221051039810110150109113116116_0x00124b0000000001%2Fconnection_state -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fbinary_sensor%2F1221051039810110150109113116116_0x00124b0000000001%2Fconnection_state%2Fconfig
+home/mqtt%2Ftopic/homeassistant%2Fdevice -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fdevice%2Fboiler
+home/mqtt%2Ftopic/homeassistant%2Fdevice%2Fboiler -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fdevice%2Fboiler%2Fconfig
+home/mqtt%2Ftopic/homeassistant%2Fsensor -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003
+home/mqtt%2Ftopic/homeassistant%2Fsensor -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor%2Fgarden
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003 -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Fhumidity
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003 -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Ftemperature
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Fhumidity -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Fhumidity%2Fconfig
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Ftemperature -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor%2F0x00124b0000000003%2Ftemperature%2Fconfig
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2Fgarden -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor%2Fgarden%2Fgarden_temperature
+home/mqtt%2Ftopic/homeassistant%2Fsensor%2Fgarden%2Fgarden_temperature -parent_of-> home/mqtt%2Ftopic/homeassistant%2Fsensor%2Fgarden%2Fgarden_temperature%2Fconfig
+home/mqtt%2Ftopic/tele -parent_of-> home/mqtt%2Ftopic/tele%2Fplug
+home/mqtt%2Ftopic/tele%2Fplug -parent_of-> home/mqtt%2Ftopic/tele%2Fplug%2FSENSOR
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fbridge
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fhall_light
+home/mqtt%2Ftopic/zigbee2mqtt -parent_of-> home/mqtt%2Ftopic/zigbee2mqtt%2Fkitchen

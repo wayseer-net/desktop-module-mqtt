@@ -35,7 +35,7 @@ func New() *Module { return &Module{} }
 
 // Info describes the module.
 func (m *Module) Info() sdk.Info {
-	return sdk.Info{Kind: Kind, Version: version, Description: "Topic trees, payloads, device status and Zigbee meshes from MQTT brokers"}
+	return sdk.Info{Kind: Kind, Version: version, Description: "Topic trees, payloads, device status, Home Assistant devices and Zigbee meshes from MQTT brokers"}
 }
 
 // Configure checks the options; nothing is read until Run.

@@ -7,6 +7,13 @@ import (
 	"wayseer.dev/sdk"
 )
 
+// readingsOf reads a payload as a topic with no discovery config does.
+func readingsOf(level string, payload []byte) readings {
+	r := rawReadingsOf(level, payload)
+	r.nums = new(state).converted(level, r)
+	return r
+}
+
 func TestAPlainNumberIsTheTopicsValue(t *testing.T) {
 	r := readingsOf("abc123", []byte(" 21.5\n"))
 	if len(r.nums) != 1 || r.nums[0] != (reading{field: fieldValue, v: 21.5}) || len(r.attrs) != 0 {

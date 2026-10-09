@@ -31,12 +31,13 @@ type reading struct {
 type readings struct {
 	nums  []reading
 	attrs map[string]sdk.Value
+	plain bool // the payload was a plain number
 }
 
-// readingsOf reads a payload on a topic whose last level is level: a plain number, a JSON
+// rawReadingsOf reads a payload on a topic whose last level is level: a plain number, a JSON
 // object flattened to dotted fields, or text. A plain number is the level's field when its
 // unit is known, such as a topic ending /temperature, and otherwise the topic's value.
-func readingsOf(level string, payload []byte) readings {
+func rawReadingsOf(level string, payload []byte) readings {
 	r := readings{attrs: map[string]sdk.Value{}}
 	p := bytes.TrimSpace(payload)
 	if v, err := strconv.ParseFloat(string(p), 64); err == nil {
@@ -44,7 +45,7 @@ func readingsOf(level string, payload []byte) readings {
 		if unitFor(level) != nil {
 			field = strings.ToLower(level)
 		}
-		r.nums = append(r.nums, reading{field, scaled(field, v)})
+		r.nums, r.plain = append(r.nums, reading{field, v}), true
 		return r
 	}
 	if len(p) > 0 && p[0] == '{' && json.Valid(p) {
@@ -79,7 +80,7 @@ func (r *readings) value(d *json.Decoder, field string, depth int) {
 	switch v := t.(type) {
 	case json.Number:
 		if f, err := v.Float64(); err == nil && !full {
-			r.nums = append(r.nums, reading{field, scaled(field, f)})
+			r.nums = append(r.nums, reading{field, f})
 		}
 	case string:
 		if !full {

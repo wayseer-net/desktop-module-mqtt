@@ -1,7 +1,7 @@
 # What the module is and may do; `wayseer dev sign` adds its program's sha256, os and arch.
 id: wayseer-labs/mqtt        # <publisher>/<name>
 name: MQTT
-description: Topic trees, payloads, device status and Zigbee meshes from MQTT brokers.
+description: Topic trees, payloads, device status, Home Assistant devices and Zigbee meshes from MQTT brokers.
 version: 0.1.0               # raise it for each package you sign
 contract: 1
 namespace: mqtt              # allocated by Wayseer to this module for the marketplace
@@ -10,3 +10,4 @@ secrets: true                # the broker password may be in the keyring
 kinds:
   - {kind: mqtt/broker, label: Broker, plural: Brokers, like: service}
   - {kind: mqtt/topic, label: Topic, plural: Topics, like: queue}
+  - {kind: mqtt/device, label: Device, plural: Devices, like: host}

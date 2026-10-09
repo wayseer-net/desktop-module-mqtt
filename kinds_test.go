@@ -21,7 +21,7 @@ func TestManifestDeclaresEveryKind(t *testing.T) {
 		t.Fatal(err)
 	}
 	s := newTestState(t, "")
-	house(s)
+	homeAssistant(t, s)
 	ents, _ := s.world(t0)
 	for _, e := range ents {
 		if !slices.ContainsFunc(m.Kinds, func(k manifest.Kind) bool { return k.Kind == string(e.Kind) }) {

@@ -8,6 +8,12 @@ for its network map that often, and that request is all it ever publishes. If th
 connection for it, as HiveMQ does when the credentials may not publish there, it stops asking
 and says so on the module's health.
 
+With `homeassistant/#` among the topics it reads Home Assistant MQTT discovery, as zigbee2mqtt,
+ESPHome, Zwave JS UI and many others send it: each device becomes an entity, with its model and
+maker, that owns its state topics, talks to the hub it is reached through, and is down when its
+availability topic says so. The units the configs declare name and convert the readings, so an
+ESPHome sensor in °F is charted as a temperature in °C.
+
 Work in progress: it connects and reads, but is not yet in the marketplace.
 
 ```yaml
@@ -18,7 +24,7 @@ modules:
       module: wayseer-labs/mqtt
       options:
         url: mqtts://broker.lan          # mqtt://, mqtts://, ws:// or wss://
-        topics: [zigbee2mqtt/#, tele/#]  # or '#' for everything, up to max_topics
+        topics: [zigbee2mqtt/#, homeassistant/#, tele/#]  # or '#' for everything, up to max_topics
         username: wayseer
         secret_keyring: mqtt/wayseer     # or secret_file, secret_env
         zigbee2mqtt_networkmap: 15m      # optional; zigbee2mqtt scans every router to answer

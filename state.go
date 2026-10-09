@@ -33,7 +33,7 @@ type topic struct {
 	retained bool // the last message was retained
 	live     bool // a message has come as it was published, not only retained
 	bytes    int
-	read     readings
+	read     readings           // as heard, before units
 	fresh    map[string]float64 // numbers heard since the last flush, by field
 	avail    avail
 	availOn  string // the topic that says it
@@ -55,6 +55,7 @@ type state struct {
 	connected bool
 	seq       uint64
 	meshes    map[string]*mesh // zigbee2mqtt bridges, by base topic
+	ha        discovered
 }
 
 func newState(src sdk.ModuleID, o *options) *state {
@@ -67,6 +68,7 @@ func newState(src sdk.ModuleID, o *options) *state {
 // receive folds one message into the working set.
 func (s *state) receive(name string, payload []byte, retained bool, now time.Time) {
 	s.messages++
+	s.keepAvailability(name, payload)
 	if dev, up, ok := availability(name, payload); ok {
 		s.setAvail(dev, name, up, now)
 		return
@@ -89,12 +91,12 @@ func (s *state) receive(name string, payload []byte, retained bool, now time.Tim
 		t.live = true
 	}
 	t.heard, t.retained, t.bytes = now, retained, len(payload)
-	if s.zigbee2mqtt(name, payload) {
+	if s.zigbee2mqtt(name, payload) || s.homeAssistant(name, payload) {
 		t.read = readings{}
 		return
 	}
-	t.read = readingsOf(name[strings.LastIndexByte(name, '/')+1:], payload)
-	for _, r := range t.read.nums {
+	t.read = rawReadingsOf(name[strings.LastIndexByte(name, '/')+1:], payload)
+	for _, r := range s.converted(name, t.read) {
 		if s.cat.note(r.field) {
 			if t.fresh == nil {
 				t.fresh = map[string]float64{}
@@ -191,6 +193,7 @@ func parentOf(name string) string {
 // remove forgets name; a level that holds others stays as a level. A level above left holding
 // nothing, that nothing was heard on, goes too.
 func (s *state) remove(name string) {
+	s.forgetConfig(name)
 	t := s.topics[name]
 	if t == nil {
 		return
@@ -219,14 +222,17 @@ func (s *state) flush(now time.Time) []sdk.Event {
 	return evs
 }
 
-// trim drops the least recently heard topics that hold no others until max_topics are left.
+// trim drops the least recently heard topics that hold no others until max_topics are left;
+// discovery configs, heard once on connecting, go last.
 func (s *state) trim() {
 	for len(s.topics) > s.opts.MaxTopics {
 		var oldest string
 		var at time.Time
+		var config bool
 		for name, t := range s.topics {
-			if t.kids == 0 && (oldest == "" || t.heard.Before(at) || t.heard.Equal(at) && name < oldest) {
-				oldest, at = name, t.heard
+			_, c := s.ha.configs[name]
+			if t.kids == 0 && (oldest == "" || config && !c || c == config && (t.heard.Before(at) || t.heard.Equal(at) && name < oldest)) {
+				oldest, at, config = name, t.heard, c
 			}
 		}
 		if oldest == "" {

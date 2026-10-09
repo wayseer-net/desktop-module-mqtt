@@ -2,6 +2,7 @@ package mqtt
 
 import (
 	"fmt"
+	"maps"
 	"strings"
 	"time"
 
@@ -29,6 +30,7 @@ func (s *state) world(now time.Time) (map[sdk.EntityRef]sdk.Entity, map[sdk.Edge
 		edges[k] = sdk.Edge{From: parent, To: ref, Rel: sdk.RelParentOf, Weight: 1, Source: s.src}
 	}
 	s.meshEdges(edges)
+	s.deviceWorld(ents, edges)
 	return ents, edges
 }
 
@@ -71,10 +73,10 @@ func span(d time.Duration) string {
 // said of it.
 func (s *state) attrs(name string, t *topic) map[string]sdk.Value {
 	a := make(map[string]sdk.Value, len(t.read.attrs)+len(t.read.nums)+3)
-	for k, v := range t.read.attrs {
-		a[k] = v
+	if !s.onlyAvailability(name) {
+		maps.Copy(a, t.read.attrs)
 	}
-	for _, r := range t.read.nums {
+	for _, r := range s.converted(name, t.read) {
 		a[r.field] = sdk.Number(r.v).In(unitOf(r.field))
 	}
 	a["topic"] = sdk.String(name)
